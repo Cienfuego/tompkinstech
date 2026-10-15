@@ -1,0 +1,60 @@
+---
+export const prerender = false;
+
+import AdminLayout from '../../layouts/AdminLayout.astro';
+import pool from '../../lib/db';
+
+const { rows: photos } = await pool.query(
+  'select id, filename, caption from photos order by sort_order asc, created_at asc'
+);
+---
+<AdminLayout title="Admin — Photos" active="photos">
+  <p class="text-sm text-text-dim mb-5">
+    Photos added here show up on the public <a href="/photos" class="text-ok">/photos</a> page.
+  </p>
+
+  <form
+    method="POST"
+    action="/admin/api/photos"
+    enctype="multipart/form-data"
+    class="border border-dashed border-border rounded-md p-8 flex flex-col items-center gap-3 mb-8"
+  >
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true" class="text-text-dim">
+      <path d="M12 16V4M7 9l5-5 5 5"></path><path d="M4 16v3a2 2 0 002 2h12a2 2 0 002-2v-3"></path>
+    </svg>
+    <input type="file" name="photo" accept="image/*" required class="text-sm" />
+    <input
+      type="text"
+      name="caption"
+      placeholder="Caption (optional)"
+      class="bg-bg border border-border rounded px-3 py-2 text-sm w-full max-w-xs"
+    />
+    <button type="submit" class="bg-ok text-[#081109] font-mono text-xs uppercase tracking-wider rounded px-5 py-2.5 min-h-10">
+      Upload
+    </button>
+  </form>
+
+  {photos.length === 0 ? (
+    <p class="font-mono text-sm text-text-faint">No photos yet.</p>
+  ) : (
+    <div class="grid gap-4" style="grid-template-columns: repeat(auto-fit, minmax(min(220px, 100%), 1fr));">
+      {photos.map((p) => (
+        <div class="relative bg-card border border-border rounded-md overflow-hidden aspect-[4/3]">
+          <img src={`/uploads/${p.filename}`} alt={p.caption ?? ''} class="w-full h-full object-cover" />
+          <form method="POST" action="/admin/api/photos/delete" class="absolute top-2 right-2">
+            <input type="hidden" name="id" value={p.id} />
+            <button
+              type="submit"
+              aria-label={`Remove ${p.caption ?? 'photo'}`}
+              class="w-7 h-7 rounded bg-bg/80 border border-border flex items-center justify-center text-text-dim"
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+                <path d="M3 6h18M8 6V4a2 2 0 012-2h4a2 2 0 012 2v2m3 0l-1 14a2 2 0 01-2 2H7a2 2 0 01-2-2L4 6"></path>
+              </svg>
+            </button>
+          </form>
+        </div>
+      ))}
+    </div>
+  )}
+</AdminLayout>

@@ -1,0 +1,64 @@
+---
+export const prerender = true;
+
+import Layout from '../layouts/Layout.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+---
+<Layout title="Projects">
+  <Nav active="projects" />
+
+  <section class="max-w-6xl mx-auto px-8 md:px-16 pt-20 pb-6">
+    <div class="font-mono text-xs uppercase tracking-[0.14em] text-ok">Projects</div>
+    <h1 class="text-4xl font-bold mt-3">Things I've built and kept running.</h1>
+  </section>
+
+  <section class="max-w-6xl mx-auto px-8 md:px-16 pb-24">
+    <div class="grid gap-6" style="grid-template-columns: repeat(auto-fit, minmax(min(340px, 100%), 1fr));">
+      <div class="bg-card border border-border rounded-md p-8 flex flex-col gap-4">
+        <div class="flex gap-2 flex-wrap">
+          <span class="font-mono text-[11px] text-text-faint border border-border rounded px-2 py-1">Full-stack</span>
+          <span class="font-mono text-[11px] text-text-faint border border-border rounded px-2 py-1">Personal</span>
+        </div>
+        <h3 class="text-xl font-semibold">Memberkins</h3>
+        <p class="text-sm leading-relaxed text-text-dim">
+          A full-stack family birthday-reminder web app — built end to end, including the architecture,
+          deployment, and the infrastructure it runs on.
+        </p>
+        <a href="#" class="font-mono text-xs text-ok flex items-center gap-1.5 mt-1">
+          [Link to repo / case study]
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path d="M5 12h14M13 5l7 7-7 7"></path>
+          </svg>
+        </a>
+      </div>
+
+      <div class="bg-card border border-border rounded-md p-8 flex flex-col gap-4">
+        <div class="flex gap-2 flex-wrap">
+          <span class="font-mono text-[11px] text-text-faint border border-border rounded px-2 py-1">Infrastructure</span>
+          <span class="font-mono text-[11px] text-text-faint border border-border rounded px-2 py-1">Ongoing</span>
+        </div>
+        <h3 class="text-xl font-semibold">DIG infrastructure</h3>
+        <p class="text-sm leading-relaxed text-text-dim">
+          Remote servers and a home-network NAS setup for dig-itgames.com — VPN, backups, and SSH access
+          managed end to end.
+        </p>
+        <a href="https://dig-itgames.com" class="font-mono text-xs text-ok flex items-center gap-1.5 mt-1">
+          dig-itgames.com
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path d="M5 12h14M13 5l7 7-7 7"></path>
+          </svg>
+        </a>
+      </div>
+
+      <div class="border border-dashed border-border rounded-md p-8 flex flex-col items-center justify-center gap-2.5 text-text-faint min-h-[180px]">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line>
+        </svg>
+        <div class="font-mono text-xs tracking-wide">More case studies coming soon</div>
+      </div>
+    </div>
+  </section>
+
+  <Footer />
+</Layout>

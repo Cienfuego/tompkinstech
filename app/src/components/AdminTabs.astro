@@ -1,0 +1,15 @@
+---
+interface Props {
+  active: 'monitoring' | 'photos';
+}
+const { active } = Astro.props as Props;
+
+const tabClass = (key: string) =>
+  `font-mono text-xs uppercase tracking-wider py-4 border-b-2 ${
+    active === key ? 'text-text border-ok' : 'text-text-faint border-transparent hover:text-text-dim'
+  }`;
+---
+<div class="flex gap-7 border-b border-border">
+  <a href="/admin" class={tabClass('monitoring')}>Monitoring</a>
+  <a href="/admin/photos" class={tabClass('photos')}>Photos</a>
+</div>

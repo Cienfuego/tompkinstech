@@ -1,0 +1,23 @@
+---
+export const prerender = false;
+
+import AdminLayout from '../../layouts/AdminLayout.astro';
+import SiteCard from '../../components/SiteCard.astro';
+import pool from '../../lib/db';
+
+const { rows: sites } = await pool.query(`
+  select
+    s.name, s.url,
+    c.status, c.http_status, c.response_ms, c.ssl_days_remaining, c.error, c.checked_at
+  from sites s
+  left join lateral (
+    select * from checks where site_id = s.id order by checked_at desc limit 1
+  ) c on true
+  order by s.name
+`);
+---
+<AdminLayout title="Admin — Monitoring" active="monitoring">
+  <div class="grid gap-5" style="grid-template-columns: repeat(auto-fit, minmax(min(340px, 100%), 1fr));">
+    {sites.map((site) => <SiteCard site={site} />)}
+  </div>
+</AdminLayout>

@@ -1,0 +1,130 @@
+---
+export const prerender = true;
+
+import Layout from '../layouts/Layout.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+---
+<Layout title="Home">
+  <Nav active="home" />
+
+  <!-- HERO -->
+  <section class="max-w-6xl mx-auto px-8 md:px-16 py-24 md:py-28 flex flex-wrap gap-12 items-center">
+    <div class="flex-1 min-w-[320px] flex flex-col gap-6">
+      <div class="font-mono text-xs uppercase tracking-[0.14em] text-ok">Developer &amp; DevOps Engineer</div>
+      <h1 class="text-4xl md:text-5xl font-bold leading-tight">
+        Michael Tompkins — 10+ years making infrastructure boring, on purpose.
+      </h1>
+      <p class="text-lg leading-relaxed text-text-dim max-w-md">
+        Software development and systems administration background — Linux, AWS/EC2, automation, and the
+        kind of monitoring that tells you about a problem before a user does. Currently looking for a
+        developer or DevOps role where that's the job.
+      </p>
+      <div class="flex flex-wrap gap-4">
+        <a
+          href="#"
+          class="bg-ok text-[#081109] font-mono text-xs uppercase tracking-wider px-6 py-3.5 rounded flex items-center gap-2 min-h-11"
+        >
+          View résumé
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"></path><circle cx="12" cy="12" r="3"></circle>
+          </svg>
+        </a>
+        <a
+          href="#"
+          download
+          class="border border-border text-text font-mono text-xs uppercase tracking-wider px-6 py-3.5 rounded flex items-center gap-2 min-h-11"
+        >
+          Download PDF
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path d="M12 5v14M5 12l7 7 7-7"></path>
+          </svg>
+        </a>
+        <a
+          href="/projects"
+          class="border border-border text-text font-mono text-xs uppercase tracking-wider px-6 py-3.5 rounded flex items-center min-h-11"
+        >
+          View projects
+        </a>
+      </div>
+      <a href="mailto:you@example.com" class="font-mono text-xs uppercase tracking-wider text-text-dim">
+        [your email] · [LinkedIn]
+      </a>
+    </div>
+
+    <div class="flex-1 min-w-[260px] max-w-[320px] w-full aspect-[3/4] border border-dashed border-border rounded-lg bg-card flex flex-col items-center justify-center gap-3 text-text-faint">
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+        <path d="M3 18l6-8 4 5 3-4 5 7z"></path><circle cx="7" cy="7" r="2"></circle>
+      </svg>
+      <span class="font-mono text-[11px] tracking-wide">[YOUR PHOTO]</span>
+    </div>
+  </section>
+
+  <!-- WHAT I DO -->
+  <section class="max-w-6xl mx-auto px-8 md:px-16 pb-20">
+    <div class="font-mono text-xs uppercase tracking-[0.14em] text-text-faint mb-6">What I do</div>
+    <div class="grid gap-5" style="grid-template-columns: repeat(auto-fit, minmax(min(320px, 100%), 1fr));">
+      <div class="bg-card border border-border rounded-md p-7 flex flex-col gap-3">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-ok" aria-hidden="true">
+          <polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline>
+        </svg>
+        <h3 class="text-lg font-semibold">Development</h3>
+        <p class="text-sm leading-relaxed text-text-dim">
+          Full-stack builds end to end — from a database schema to a UI someone outside IT can actually use.
+        </p>
+      </div>
+      <div class="bg-card border border-border rounded-md p-7 flex flex-col gap-3">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-ok" aria-hidden="true">
+          <rect x="2" y="3" width="20" height="7" rx="1"></rect><rect x="2" y="14" width="20" height="7" rx="1"></rect>
+          <line x1="6" y1="6.5" x2="6" y2="6.5"></line><line x1="6" y1="17.5" x2="6" y2="17.5"></line>
+        </svg>
+        <h3 class="text-lg font-semibold">Systems &amp; DevOps</h3>
+        <p class="text-sm leading-relaxed text-text-dim">
+          Linux administration, AWS/EC2, networking, and the unglamorous reliability work — backups, VPNs, uptime.
+        </p>
+      </div>
+      <div class="bg-card border border-border rounded-md p-7 flex flex-col gap-3">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-ok" aria-hidden="true">
+          <circle cx="12" cy="12" r="3"></circle>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.6 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.6a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+        </svg>
+        <h3 class="text-lg font-semibold">Automation</h3>
+        <p class="text-sm leading-relaxed text-text-dim">
+          If I'm doing something the same way twice, the third time is a script — including the test automation
+          behind this site's own dashboard.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- MONITORING TEASER -->
+  <section class="max-w-6xl mx-auto px-8 md:px-16 pb-24">
+    <div class="bg-bg-2 border border-border rounded-md p-8 flex flex-wrap gap-7 items-center justify-between">
+      <div class="max-w-md">
+        <div class="font-mono text-xs uppercase tracking-wider text-text-faint mb-1">Currently keeping an eye on</div>
+        <p class="text-sm leading-relaxed text-text-dim">
+          Live status and test-automation results for a few sites I run or maintain — full dashboard is behind login.
+        </p>
+      </div>
+      <div class="flex flex-wrap gap-3">
+        <div class="flex items-center gap-2 bg-card border border-border rounded px-3.5 py-2.5 font-mono text-xs text-text-dim">
+          <span class="w-2 h-2 rounded-full bg-ok inline-block"></span>healthgardenadvocacy.com
+        </div>
+        <div class="flex items-center gap-2 bg-card border border-border rounded px-3.5 py-2.5 font-mono text-xs text-text-dim">
+          <span class="w-2 h-2 rounded-full bg-ok inline-block"></span>dig-itgames.com
+        </div>
+        <div class="flex items-center gap-2 bg-card border border-border rounded px-3.5 py-2.5 font-mono text-xs text-text-dim">
+          <span class="w-2 h-2 rounded-full bg-ok inline-block"></span>games.dig-itgames.com
+        </div>
+        <a href="/admin/login" class="flex items-center gap-1.5 font-mono text-xs text-ok px-1 py-2.5">
+          View dashboard
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+            <path d="M5 12h14M13 5l7 7-7 7"></path>
+          </svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <Footer />
+</Layout>

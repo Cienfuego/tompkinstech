@@ -1,0 +1,31 @@
+---
+import Layout from './Layout.astro';
+import AdminTabs from '../components/AdminTabs.astro';
+
+interface Props {
+  title: string;
+  active: 'monitoring' | 'photos';
+}
+const { title, active } = Astro.props as Props;
+---
+<Layout title={title}>
+  <div class="max-w-6xl mx-auto px-8 md:px-16">
+    <nav class="flex items-center justify-between py-7 border-b border-border">
+      <div class="flex items-center gap-5">
+        <a href="/" class="font-mono text-base font-semibold">tompkinstech<span class="text-ok">.</span>com</a>
+        <span class="text-text-faint">/</span>
+        <span class="font-mono text-xs uppercase tracking-wider">Admin</span>
+      </div>
+      <a href="/admin/logout" class="font-mono text-xs uppercase tracking-wider text-text-dim hover:text-text">Log out</a>
+    </nav>
+
+    <div class="pt-12 pb-24">
+      <h1 class="text-3xl font-bold mb-1">Admin</h1>
+      <p class="text-sm text-text-dim mb-6">Site monitoring and the photos on the public site, in one place.</p>
+      <AdminTabs active={active} />
+      <div class="pt-8">
+        <slot />
+      </div>
+    </div>
+  </div>
+</Layout>

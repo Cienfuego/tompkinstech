@@ -1,0 +1,63 @@
+---
+export const prerender = false;
+
+import Layout from '../../layouts/Layout.astro';
+import { checkPassword, createSession, verifySession } from '../../lib/auth';
+
+if (verifySession(Astro.cookies.get('session')?.value)) {
+  return Astro.redirect('/admin');
+}
+
+let error = '';
+if (Astro.request.method === 'POST') {
+  const form = await Astro.request.formData();
+  const password = form.get('password')?.toString() ?? '';
+  if (await checkPassword(password)) {
+    Astro.cookies.set('session', createSession(), {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'lax',
+      path: '/',
+      maxAge: 60 * 60 * 24 * 7
+    });
+    return Astro.redirect('/admin');
+  }
+  error = 'Incorrect password.';
+}
+---
+<Layout title="Admin — Sign in">
+  <div class="min-h-[100vh] flex items-center justify-center px-6 py-16">
+    <div class="w-full max-w-sm flex flex-col gap-8">
+      <div class="flex flex-col items-center gap-2">
+        <a href="/" class="font-mono text-lg font-semibold">tompkinstech<span class="text-ok">.</span>com</a>
+        <div class="font-mono text-[11px] uppercase tracking-wider text-text-faint">Admin · single-user access</div>
+      </div>
+
+      <form method="POST" class="bg-card border border-border rounded-lg p-9 flex flex-col gap-5">
+        {error && <p class="text-down text-sm font-mono">{error}</p>}
+        <div>
+          <label class="font-mono text-[11px] uppercase tracking-wider text-text-faint mb-2 block" for="password">
+            Password
+          </label>
+          <input
+            id="password"
+            name="password"
+            type="password"
+            required
+            class="w-full bg-bg border border-border rounded px-3.5 py-3 text-sm min-h-11"
+          />
+        </div>
+        <button
+          type="submit"
+          class="bg-ok text-[#081109] font-mono text-xs uppercase tracking-wider rounded py-3.5 min-h-11"
+        >
+          Sign in
+        </button>
+      </form>
+
+      <p class="text-center text-xs text-text-faint leading-relaxed">
+        One account, no sign-up or password reset flow — just me, the sites I'm watching, and the photos I add.
+      </p>
+    </div>
+  </div>
+</Layout>

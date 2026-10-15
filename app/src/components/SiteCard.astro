@@ -1,0 +1,58 @@
+---
+interface Site {
+  name: string;
+  url: string;
+  status: 'up' | 'degraded' | 'down' | null;
+  http_status: number | null;
+  response_ms: number | null;
+  ssl_days_remaining: number | null;
+  error: string | null;
+  checked_at: string | null;
+}
+interface Props {
+  site: Site;
+}
+const { site } = Astro.props as Props;
+
+const dot: Record<string, string> = { up: 'bg-ok', degraded: 'bg-warn', down: 'bg-down' };
+const label: Record<string, string> = { up: 'Operational', degraded: 'Degraded', down: 'Down' };
+const textColor: Record<string, string> = { up: 'text-ok', degraded: 'text-warn', down: 'text-down' };
+
+const dotClass = (site.status && dot[site.status]) || 'bg-text-faint';
+const statusLabel = (site.status && label[site.status]) || 'No data yet';
+const statusColor = (site.status && textColor[site.status]) || 'text-text-faint';
+
+function timeAgo(d: string | null) {
+  if (!d) return '—';
+  const diffMs = Date.now() - new Date(d).getTime();
+  const mins = Math.round(diffMs / 60000);
+  if (mins < 1) return 'just now';
+  if (mins < 60) return `${mins} min ago`;
+  return `${Math.round(mins / 60)} hr ago`;
+}
+---
+<div class="bg-card border border-border rounded-md p-7 flex flex-col gap-4">
+  <div class="flex items-center justify-between">
+    <div class="font-semibold text-sm">{site.name}</div>
+    <div class={`flex items-center gap-2 font-mono text-xs ${statusColor}`}>
+      <span class={`w-2 h-2 rounded-full inline-block ${dotClass}`}></span>
+      {statusLabel}
+    </div>
+  </div>
+  <div class="flex gap-6 font-mono">
+    <div>
+      <div class="text-xl font-semibold">{site.http_status ?? '—'}</div>
+      <div class="text-[11px] text-text-faint">http status</div>
+    </div>
+    <div>
+      <div class="text-xl font-semibold">{site.response_ms != null ? `${site.response_ms}ms` : '—'}</div>
+      <div class="text-[11px] text-text-faint">response</div>
+    </div>
+    <div>
+      <div class="text-xl font-semibold">{site.ssl_days_remaining != null ? `${site.ssl_days_remaining}d` : '—'}</div>
+      <div class="text-[11px] text-text-faint">ssl left</div>
+    </div>
+  </div>
+  {site.error && <div class="text-xs text-down font-mono">{site.error}</div>}
+  <div class="font-mono text-[11px] text-text-faint">Last checked: {timeAgo(site.checked_at)}</div>
+</div>

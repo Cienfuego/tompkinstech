@@ -1,0 +1,39 @@
+---
+export const prerender = false; // reads the photos table, which admin manages at runtime
+
+import Layout from '../layouts/Layout.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import pool from '../lib/db';
+
+const { rows: photos } = await pool.query(
+  'select id, filename, caption from photos order by sort_order asc, created_at asc'
+);
+---
+<Layout title="Photos">
+  <Nav active="photos" />
+
+  <section class="max-w-6xl mx-auto px-8 md:px-16 pt-20 pb-6">
+    <div class="font-mono text-xs uppercase tracking-[0.14em] text-ok">Photos</div>
+    <h1 class="text-4xl font-bold mt-3">A few shots from the trail.</h1>
+    <p class="text-[15px] leading-relaxed text-text-dim max-w-md mt-4">
+      Outside of a terminal, this is mostly where I am — hiking and camping around the region.
+    </p>
+  </section>
+
+  <section class="max-w-6xl mx-auto px-8 md:px-16 pb-24">
+    {photos.length === 0 ? (
+      <p class="font-mono text-sm text-text-faint">No photos yet — add some from /admin.</p>
+    ) : (
+      <div class="grid gap-4" style="grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr));">
+        {photos.map((p) => (
+          <div class="bg-card border border-border rounded-md overflow-hidden aspect-[4/3]">
+            <img src={`/uploads/${p.filename}`} alt={p.caption ?? ''} class="w-full h-full object-cover" />
+          </div>
+        ))}
+      </div>
+    )}
+  </section>
+
+  <Footer />
+</Layout>

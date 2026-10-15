@@ -1,0 +1,66 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: tompkinstech
+      POSTGRES_USER: tompkinstech
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U tompkinstech"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  app:
+    build: ./app
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgresql://tompkinstech:${POSTGRES_PASSWORD}@postgres:5432/tompkinstech
+      SESSION_SECRET: ${SESSION_SECRET}
+      ADMIN_PASSWORD_HASH: ${ADMIN_PASSWORD_HASH}
+      UPLOADS_DIR: /data/uploads
+      HOST: 0.0.0.0
+      PORT: "4321"
+    volumes:
+      - uploads:/data/uploads
+    ports:
+      - "4321:4321"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  worker:
+    build: ./worker
+    restart: unless-stopped
+    environment:
+      DATABASE_URL: postgresql://tompkinstech:${POSTGRES_PASSWORD}@postgres:5432/tompkinstech
+      CHECK_INTERVAL_MINUTES: "5"
+      ALERT_EMAIL_TO: ${ALERT_EMAIL_TO}
+      ALERT_EMAIL_FROM: ${ALERT_EMAIL_FROM}
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+      AWS_REGION: ${AWS_REGION}
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+  # Not started by a plain `docker compose up`. Once you have a tunnel
+  # token from the Cloudflare Zero Trust dashboard, run:
+  #   docker compose --profile tunnel up -d
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    restart: unless-stopped
+    command: tunnel run
+    environment:
+      TUNNEL_TOKEN: ${CLOUDFLARE_TUNNEL_TOKEN}
+    profiles: ["tunnel"]
+    depends_on:
+      - app
+
+volumes:
+  pgdata:
+  uploads:
