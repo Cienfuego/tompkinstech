@@ -22,8 +22,8 @@ async function runOnce() {
       [site.id, result.status, result.httpStatus, result.responseMs, result.sslDaysRemaining, result.error]
     );
 
-    // only alert on the up -> not-up transition, so a sustained outage
-    // doesn't re-email on every interval
+    // only alert on a status transition, so a sustained outage (or a
+    // sustained up state) doesn't re-email on every interval
     if (wasUp && result.status !== 'up') {
       const subject = `${site.name} is ${result.status}`;
       const body = [
@@ -33,6 +33,14 @@ async function runOnce() {
       ]
         .filter(Boolean)
         .join('\n');
+
+      sendAlert(subject, body).catch((err) => console.error('alert email failed:', err));
+    } else if (!wasUp && result.status === 'up') {
+      const subject = `${site.name} is back up`;
+      const body = [
+        `${site.url} is responding normally again (HTTP ${result.httpStatus ?? 'unknown'}).`,
+        `Checked at ${new Date().toISOString()}.`
+      ].join('\n');
 
       sendAlert(subject, body).catch((err) => console.error('alert email failed:', err));
     }
