@@ -38,7 +38,8 @@ services:
     restart: unless-stopped
     environment:
       DATABASE_URL: postgresql://tompkinstech:${POSTGRES_PASSWORD}@postgres:5432/tompkinstech
-      CHECK_INTERVAL_MINUTES: "5"
+      CHECK_INTERVAL_MINUTES: "1"
+      CHECK_RETENTION_DAYS: "90"
       ALERT_EMAIL_TO: ${ALERT_EMAIL_TO}
       ALERT_EMAIL_FROM: ${ALERT_EMAIL_FROM}
       AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}

@@ -1,7 +1,10 @@
 import pool from './db.js';
 import { checkSite } from './checks.js';
 import { sendAlert } from './mailer.js';
+import { pruneOldChecks } from './retention.js';
 
+const INTERVAL_MIN = Number(process.env.CHECK_INTERVAL_MINUTES || 5);
+const PRUNE_INTERVAL_MS = 24 * 60 * 60 * 1000; // once a day
 const INTERVAL_MIN = Number(process.env.CHECK_INTERVAL_MINUTES || 5);
 
 async function runOnce() {
@@ -53,3 +56,8 @@ runOnce().catch((err) => console.error('check run failed:', err));
 setInterval(() => {
   runOnce().catch((err) => console.error('check run failed:', err));
 }, INTERVAL_MIN * 60 * 1000);
+
+pruneOldChecks().catch((err) => console.error('retention prune failed:', err));
+setInterval(() => {
+  pruneOldChecks().catch((err) => console.error('retention prune failed:', err));
+}, PRUNE_INTERVAL_MS);
