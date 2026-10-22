@@ -5,7 +5,6 @@ import { pruneOldChecks } from './retention.js';
 
 const INTERVAL_MIN = Number(process.env.CHECK_INTERVAL_MINUTES || 5);
 const PRUNE_INTERVAL_MS = 24 * 60 * 60 * 1000; // once a day
-const INTERVAL_MIN = Number(process.env.CHECK_INTERVAL_MINUTES || 5);
 
 async function runOnce() {
   const { rows: sites } = await pool.query('select id, name, url from sites');
