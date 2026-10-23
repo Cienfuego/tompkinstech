@@ -12,8 +12,7 @@ const { rows: photos } = await pool.query(
   <p class="text-sm text-text-dim mb-5">
     Photos added here show up on the public <a href="/photos" class="text-ok">/photos</a> page.
   </p>
-
-  <form
+    <form
     method="POST"
     action="/admin/api/photos"
     enctype="multipart/form-data"
@@ -22,18 +21,55 @@ const { rows: photos } = await pool.query(
     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true" class="text-text-dim">
       <path d="M12 16V4M7 9l5-5 5 5"></path><path d="M4 16v3a2 2 0 002 2h12a2 2 0 002-2v-3"></path>
     </svg>
-    <input type="file" name="photo" accept="image/*" required class="text-sm" />
+
+    <div class="flex items-center gap-3">
+      <label
+        for="photo-input"
+        id="browse-label"
+        class="bg-card border border-border rounded px-4 py-2 text-xs font-mono uppercase tracking-wider cursor-pointer transition-opacity"
+      >
+        Browse
+      </label>
+      <input type="file" id="photo-input" name="photo" accept="image/*" required class="hidden" />
+      <span id="file-name" class="text-sm text-text-dim">No file selected</span>
+    </div>
+
     <input
       type="text"
       name="caption"
       placeholder="Caption (optional)"
       class="bg-bg border border-border rounded px-3 py-2 text-sm w-full max-w-xs"
     />
-    <button type="submit" class="bg-ok text-[#081109] font-mono text-xs uppercase tracking-wider rounded px-5 py-2.5 min-h-10">
+    <button
+      type="submit"
+      id="upload-btn"
+      disabled
+      class="bg-ok text-[#081109] font-mono text-xs uppercase tracking-wider rounded px-5 py-2.5 min-h-10 opacity-40 cursor-not-allowed transition-opacity"
+    >
       Upload
     </button>
   </form>
 
+  <script>
+    const input = document.getElementById('photo-input') as HTMLInputElement;
+    const label = document.getElementById('browse-label');
+    const fileName = document.getElementById('file-name');
+    const uploadBtn = document.getElementById('upload-btn') as HTMLButtonElement;
+
+    input.addEventListener('change', () => {
+      if (input.files && input.files.length > 0) {
+        fileName.textContent = input.files[0].name;
+        label.classList.add('opacity-40', 'pointer-events-none');
+        uploadBtn.disabled = false;
+        uploadBtn.classList.remove('opacity-40', 'cursor-not-allowed');
+      } else {
+        fileName.textContent = 'No file selected';
+        label.classList.remove('opacity-40', 'pointer-events-none');
+        uploadBtn.disabled = true;
+        uploadBtn.classList.add('opacity-40', 'cursor-not-allowed');
+      }
+    });
+  </script>
   {photos.length === 0 ? (
     <p class="font-mono text-sm text-text-faint">No photos yet.</p>
   ) : (
