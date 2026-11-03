@@ -5,16 +5,22 @@ import { pruneOldChecks } from './retention.js';
 
 const INTERVAL_MIN = Number(process.env.CHECK_INTERVAL_MINUTES || 5);
 const PRUNE_INTERVAL_MS = 24 * 60 * 60 * 1000; // once a day
+const CONSECUTIVE_THRESHOLD = 2; //checks must agree before we alert
 
 async function runOnce() {
   const { rows: sites } = await pool.query('select id, name, url from sites');
 
   for (const site of sites) {
-    const prev = await pool.query(
-      'select status from checks where site_id = $1 order by checked_at desc limit 1',
+    // how many consecutive non-up checks immediately precede this one
+    const { rows: recent } = await pool.query(
+      'select status from checks where site_id = $1 order by checked_at desc limit 10',
       [site.id]
     );
-    const wasUp = !prev.rows[0] || prev.rows[0].status === 'up';
+    let downStreak = 0;
+    for (const row of recent) {
+      if (row.status !== 'up') downStreak++;
+      else break;
+    }
 
     const result = await checkSite(site.url);
 
@@ -24,20 +30,24 @@ async function runOnce() {
       [site.id, result.status, result.httpStatus, result.responseMs, result.sslDaysRemaining, result.error]
     );
 
-    // only alert on a status transition, so a sustained outage (or a
-    // sustained up state) doesn't re-email on every interval
-    if (wasUp && result.status !== 'up') {
-      const subject = `${site.name} is ${result.status}`;
-      const body = [
-        `${site.url} returned ${result.httpStatus ?? 'no response'}.`,
-        result.error ? `Error: ${result.error}` : null,
-        `Checked at ${new Date().toISOString()}.`
-      ]
-        .filter(Boolean)
-        .join('\n');
+    if (result.status !== 'up') {
+      const newStreak = downStreak + 1;
+      // only alert the moment the outage is confirmed (crosses the threshold),
+      // not on the first blip and not again on every check during a sustained outage
+      if (newStreak === CONSECUTIVE_THRESHOLD) {
+        const subject = `${site.name} is ${result.status}`;
+        const body = [
+          `${site.url} returned ${result.httpStatus ?? 'no response'}.`,
+          result.error ? `Error: ${result.error}` : null,
+          `Checked at ${new Date().toISOString()}.`
+        ]
+          .filter(Boolean)
+          .join('\n');
 
-      sendAlert(subject, body).catch((err) => console.error('alert email failed:', err));
-    } else if (!wasUp && result.status === 'up') {
+        sendAlert(subject, body).catch((err) => console.error('alert email failed:', err));
+      }
+    } else if (downStreak >= CONSECUTIVE_THRESHOLD) {
+      // only send a recovery alert if the outage was actually confirmed/alerted in the first place
       const subject = `${site.name} is back up`;
       const body = [
         `${site.url} is responding normally again (HTTP ${result.httpStatus ?? 'unknown'}).`,
